@@ -1,6 +1,4 @@
 import sys
-import os
-import site
 
 
 def construct() -> str:
@@ -20,8 +18,6 @@ def construct() -> str:
         result += "\npython -m venv .venv"
 
     return result
-
-
 
 
 if __name__ == "__main__":
