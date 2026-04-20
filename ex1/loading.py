@@ -20,7 +20,7 @@ def load_modules() -> dict[str, object | None]:
 
 
 def check_required_modules(modules: dict[str, object | None]) -> list[str]:
-    """Checks for mandatory packages and 
+    """Checks for mandatory packages and
     returns a list with the missing ones"""
     missing: list[str] = []
     for name in ("pandas", "numpy", "matplotlib"):

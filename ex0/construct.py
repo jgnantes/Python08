@@ -2,6 +2,9 @@ import sys
 
 
 def construct() -> str:
+    """Checks if the program in running in a virtual evironment
+    if it is, returns details about it
+    if not, returns instructions to create and activate one"""
     in_venv: bool = (
         hasattr(sys, "real_prefix") or
         (hasattr(sys, "base_prefix") and sys.prefix != sys.base_prefix)
