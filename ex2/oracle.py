@@ -1,26 +1,30 @@
 import os
 import sys
 from typing import Dict, List, Optional, Tuple
-from dotenv import load_dotenv
 
 
-def ensure_env_file() -> Optional[str]:
+def ensure_env_file(env_path: str) -> bool:
     """Checks if the path to .env.example exists"""
-    if os.path.exists(".env.example"):
+    if os.path.exists(env_path):
+        return True
+    return False
+
+
+def load_config() -> Optional[Dict[str, Optional[str]]]:
+    """Tries to get and return data from .env.example
+    If unsuccessful, returns None"""
+    try:
+        from dotenv import load_dotenv
+        load_dotenv(".env.example")
+        return {
+            "MATRIX_MODE": os.getenv("MATRIX_MODE"),
+            "DATABASE_URL": os.getenv("DATABASE_URL"),
+            "API_KEY": os.getenv("API_KEY"),
+            "LOG_LEVEL": os.getenv("LOG_LEVEL"),
+            "ZION_ENDPOINT": os.getenv("ZION_ENDPOINT"),
+        }
+    except ImportError:
         return None
-    return "Configuration error: .env not found and .env.example is missing."
-
-
-def load_config() -> Dict[str, Optional[str]]:
-    """Gets data from .env.example"""
-    load_dotenv(".env.example")
-    return {
-        "MATRIX_MODE": os.getenv("MATRIX_MODE"),
-        "DATABASE_URL": os.getenv("DATABASE_URL"),
-        "API_KEY": os.getenv("API_KEY"),
-        "LOG_LEVEL": os.getenv("LOG_LEVEL"),
-        "ZION_ENDPOINT": os.getenv("ZION_ENDPOINT"),
-    }
 
 
 def build_status(
@@ -76,24 +80,29 @@ def build_status(
 
 if __name__ == "__main__":
     print("ORACLE STATUS: Reading the Matrix...")
-    env_error = ensure_env_file()
-    if env_error is not None:
-        print(env_error)
+    env_error = ensure_env_file(".env.example")
+    if not env_error:
+        print("\nERROR: file .env.example is missing from the root directory")
+        print("Create it and include the necessary configuration variables")
     else:
         config = load_config()
-        status, warnings = build_status(config)
-        print("\nConfiguration loaded:")
-        print(f"Mode: {status['mode']}")
-        print(f"Database: {status['database']}")
-        print(f"API Access: {status['api_access']}")
-        print(f"Log Level: {status['log_level']}")
-        print(f"Zion Network: {status['zion_network']}")
-        print("\nEnvironment security check:")
-        print("[OK] No hardcoded secrets detected")
-        print("[OK] .env file properly configured")
-        print("[OK] Production overrides available")
-        print("\nThe Oracle sees all configurations.")
-        if warnings:
-            print("Warnings:")
-            for warning in warnings:
-                print(f"- {warning}", file=sys.stderr)
+        if not config:
+            print("\nERROR: module 'dotenv' not found")
+            print("Install the module and try again")
+        else:
+            status, warnings = build_status(config)
+            print("\nConfiguration loaded:")
+            print(f"Mode: {status['mode']}")
+            print(f"Database: {status['database']}")
+            print(f"API Access: {status['api_access']}")
+            print(f"Log Level: {status['log_level']}")
+            print(f"Zion Network: {status['zion_network']}")
+            print("\nEnvironment security check:")
+            print("[OK] No hardcoded secrets detected")
+            print("[OK] .env file properly configured")
+            print("[OK] Production overrides available")
+            print("\nThe Oracle sees all configurations.")
+            if warnings:
+                print("Warnings:")
+                for warning in warnings:
+                    print(f"- {warning}", file=sys.stderr)
