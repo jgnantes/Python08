@@ -30,7 +30,7 @@ def check_required_modules(modules: dict[str, object | None]) -> list[str]:
 
 
 def compare_package_versions(modules: dict[str, object | None]) -> str:
-    """Checks for each pacage version and returns the formatted output"""
+    """Checks for each package version and returns the formatted output"""
     lines = ["Checking dependencies:"]
     for name, purpose in DEPENDENCIES.items():
         module = modules[name]
@@ -53,8 +53,8 @@ def installation_message(missing: list[str]) -> str | None:
         "\nInstall with pip:",
         f"pip install {packages}",
         "\nOr with the provided dependency files:",
-        "With pip: pip install -r requirements.txt",
-        "With Poetry: poetry install",
+        "\nWith pip:\npip install -r requirements.txt",
+        "\nWith Poetry:\npoetry install --no-root",
     ])
 
 
@@ -78,7 +78,7 @@ def analyze_matrix_data(
 ) -> tuple[object, dict[str, float | int]]:
     """Creates the dataframe and summary"""
     dataframe = pd_module.DataFrame(raw_data)
-    dataframe["is_unstable"] = dataframe["stability"] > 0.8
+    dataframe["is_unstable"] = dataframe["stability"] < 0.8
     summary = {
         "rows": int(len(dataframe)),
         "mean_energy": float(dataframe["energy"].mean()),

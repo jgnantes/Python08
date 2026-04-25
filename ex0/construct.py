@@ -13,13 +13,13 @@ def construct() -> str:
     result: str = ""
     if in_venv:
         result += f"Virtual environment detected: {sys.prefix}\n"
-        result += f"Environemtn version: {sys.version}\n"
+        result += f"Environment version: {sys.version}"
     else:
         result += "No virtual environment detected\n\n"
         result += "To create one, run the following command on your terminal:"
         result += "\npython -m venv .venv"
         result += "\n\nTo activate it, run:\nsource .venv/bin/activate"
-        result += "\n\nWhen you're done, run the 'deactivate' command"
+        result += "\n\nWhen you're finished, run: \ndeactivate"
 
     return result
 

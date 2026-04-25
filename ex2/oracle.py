@@ -53,7 +53,7 @@ def build_status(
         database = "Missing configuration"
         warnings.append("DATABASE_URL is missing.")
 
-    if api_key:
+    if api_key and len(api_key) > 0:
         api_access = "Authenticated"
     else:
         api_access = "Missing configuration"
@@ -80,14 +80,14 @@ def build_status(
 
 if __name__ == "__main__":
     print("ORACLE STATUS: Reading the Matrix...")
-    env_error = ensure_env_file(".env.example")
+    env_error = ensure_env_file(".env")
     if not env_error:
-        print("\nERROR: file .env.example is missing from the root directory")
-        print("Create it and include the necessary configuration variables")
+        print("\nERROR: file .env is missing from the root directory")
+        print("Create it with:\ncp .env.example .env")
     else:
         config = load_config()
         if not config:
-            print("\nERROR: module 'dotenv' not found")
+            print("\nERROR: module 'python-dotenv' not found")
             print("Install the module and try again")
         else:
             status, warnings = build_status(config)
